@@ -1,0 +1,34 @@
+name: Deploy spoknad-alert to NAIS
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy_prod_fss:
+    name: Deploy alert til prod-fss
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Call deployment-cli/action and apply yaml file to prod-fss
+        uses: navikt/deployment-cli/action@a260e84
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          cluster: prod-fss
+          team: SPoknad
+          resource: spoknad-alerts.yaml
+  deploy_prod_sbs:
+    name: Deploy alert til prod-sbs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Call deployment-cli/action and apply yaml file to prod-sbs
+        uses: navikt/deployment-cli/action@a260e84
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          cluster: prod-sbs
+          team: SPoknad
+          resource: soknad-alerts-sbs.yaml
