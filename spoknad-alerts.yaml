@@ -67,7 +67,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: spoknad-errorlogging
-      expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfosyketilfelle|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfosyketilfelle|syfoaltinn"}[5m]))) > 10
+      expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn"}[5m]))) > 10
       for: 3m
       description: "{{ $labels.log_app }} rapporterer error i loggene"
       action: "Sjekk loggene til {{ $labels.log_app }} i {{ $labels.log_namespace }}, for å se hvorfor det er så mye feil"
