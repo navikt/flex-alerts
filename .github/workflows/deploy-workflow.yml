@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-fss
-        uses: navikt/deployment-cli/action@e82709d
+        uses: navikt/deployment-cli/action@4d26067
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-sbs
-        uses: navikt/deployment-cli/action@e82709d
+        uses: navikt/deployment-cli/action@4d26067
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
