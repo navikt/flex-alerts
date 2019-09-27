@@ -13,14 +13,14 @@ spec:
     - alert: spoknad-app-nede
       expr: up{app=~"syfosoknad|syfotekster",job="kubernetes-pods"} == 0
       for: 2m
-      description: "{{ $labels.app }} er nede i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: spoknad-asynkron-app-nede
       expr: up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfoaltinn",job="kubernetes-pods"} == 0
       for: 10m
-      description: "{{ $labels.app }} er nede i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
@@ -34,35 +34,35 @@ spec:
     - alert: spoknad-mangler-metrikker
       expr: absent(up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfosoknad|syfoaltinn|syfotekster",job="kubernetes-pods"})
       for: 5m
-      description: "{{ $labels.app }} rapporterer ingen metrikker i {{ $labels.kubernetes_namespace }}"
-      action: "Sjekk om {{ $labels.app }} i {{ $labels.kubernetes_namespace }} er oppe"
+      description: "{{ $labels.app }} rapporterer ingen metrikker"
+      action: "Sjekk om {{ $labels.app }} er oppe"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: syfosoknadvarsel-lytter-stoppet
       expr: sum(increase(syfosoknadvarsel_kafkalytter_stoppet_total[30m])) > 10
       for: 10m
-      description: "{{ $labels.app }} sin kafkalytter har stoppet i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} sin kafkalytter har stoppet"
       action: "Kafkalytter stoppet på syfosoknadvarsel. Sjekk logger, og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: syfogsak-lytter-stoppet
       expr: sum(increase(syfogsak_kafkalytter_stoppet_total[30m])) > 0
       for: 5m
-      description: "{{ $labels.app }} sin kafkalytter har stoppet i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} sin kafkalytter har stoppet"
       action: "Kafkalytter stoppet på syfogsak. Sjekk logger, og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: syfogsak-ingenSoknaderBehandlet
       expr: sum(increase(syfogsak_innsending_behandlet_total[24h])) < 0.8
       for: 1m
-      description: "{{ $labels.app }} har ikke behandlet soknader på 24 timer i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} har ikke behandlet soknader på 24 timer"
       action: "Syfogsak har ikke behandlet soknader på 24 timer. Sjekk i errorloggen: https://logs.adeo.no/goto/c117ef2a4003c420e43d391f8007ddda , og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: syfoaltinn-lytter-stoppet
       expr: sum(increase(syfoaltinn_kafkalytter_stoppet_total[30m])) > 10
       for: 10m
-      description: "{{ $labels.app }} sin kafkalytter har stoppet i {{ $labels.kubernetes_namespace }}"
+      description: "{{ $labels.app }} sin kafkalytter har stoppet"
       action: "Kafkalytter stoppet på syfoaltinn. Sjekk logger, og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
       sla: respond within 1h, during office hours
       severity: danger
@@ -70,4 +70,4 @@ spec:
       expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn"}[5m]))) > 10
       for: 3m
       description: "{{ $labels.log_app }} rapporterer error i loggene"
-      action: "Sjekk loggene til {{ $labels.log_app }} i {{ $labels.log_namespace }}, for å se hvorfor det er så mye feil"
+      action: "Sjekk loggene til {{ $labels.log_app }}, for å se hvorfor det er så mye feil (over 10 feil per 100 logger de siste 5 minuttene)"

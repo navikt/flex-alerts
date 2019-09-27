@@ -20,7 +20,7 @@ spec:
     - alert: spoknad-sbs-mangler-metrikker
       expr: absent(up{app=~"syfoapi|sykepengesoknad|sykefravaer|modiasyfofront",job="kubernetes-pods"})
       for: 5m
-      description: "{{ $labels.app }} rapporterer ingen metrikker i {{ $labels.kubernetes_namespace }}"
-      action: "Sjekk om {{ $labels.app }} i {{ $labels.kubernetes_namespace }} er oppe"
+      description: "{{ $labels.app }} rapporterer ingen metrikker"
+      action: "Sjekk om {{ $labels.app }} er oppe"
       sla: respond within 1h, during office hours
       severity: danger
