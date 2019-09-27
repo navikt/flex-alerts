@@ -3,7 +3,7 @@ kind: "Alert"
 metadata:
   name: spoknad-alerts
   labels:
-    team: spoknad
+    team: SPoknad
 spec:
   receivers:
     slack:
