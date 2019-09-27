@@ -11,12 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-fss
-        uses: navikt/deployment-cli/action@e762fa6
+        uses: navikt/deployment-cli/action@a364873
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           cluster: prod-fss
-          team: SPoknad
+          team: spoknad
           rawresources: spoknad-alerts.yaml
   deploy_prod_sbs:
     name: Deploy alert til prod-sbs
@@ -25,10 +25,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-sbs
-        uses: navikt/deployment-cli/action@e762fa6
+        uses: navikt/deployment-cli/action@a364873
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           cluster: prod-sbs
-          team: SPoknad
+          team: spoknad
           rawresources: spoknad-alerts-sbs.yaml
