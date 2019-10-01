@@ -5,13 +5,13 @@ on:
       - master
 jobs:
   deploy_prod_fss:
-    name: Deploy alert til prod-fss
+    name: Deploy alert to prod-fss
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-fss
-        uses: navikt/deployment-cli/action@4d26067
+        uses: navikt/deployment-cli/action@0.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -19,13 +19,13 @@ jobs:
           team: flex
           rawresources: flex-alerts.yaml
   deploy_prod_sbs:
-    name: Deploy alert til prod-sbs
+    name: Deploy alert to prod-sbs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Call deployment-cli/action and apply yaml file to prod-sbs
-        uses: navikt/deployment-cli/action@4d26067
+        uses: navikt/deployment-cli/action@0.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
