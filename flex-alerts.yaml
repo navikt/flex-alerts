@@ -1,37 +1,37 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Alert"
 metadata:
-  name: spoknad-alerts
+  name: flex-alerts
   labels:
-    team: spoknad
+    team: flex
 spec:
   receivers:
     slack:
       channel: '#spøkelser'
       #prependText: '<!here> | '
   alerts:
-    - alert: spoknad-app-nede
+    - alert: flex-app-nede
       expr: up{app=~"syfosoknad|syfotekster",job="kubernetes-pods"} == 0
       for: 2m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: spoknad-asynkron-app-nede
+    - alert: flex-asynkron-app-nede
       expr: up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfoaltinn",job="kubernetes-pods"} == 0
       for: 10m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: spoknad-kontinuerlig-restart
+    - alert: flex-kontinuerlig-restart
       expr: sum(increase(kube_pod_container_status_restarts_total{container=~"syfosoknad|syfopdfgen|syfogsak|syfosoknadvarsel|syfoaltinn"}[30m])) by (container) > 2
       for: 5m
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: spoknad-mangler-metrikker
+    - alert: flex-mangler-metrikker
       expr: absent(up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfosoknad|syfoaltinn|syfotekster",job="kubernetes-pods"})
       for: 5m
       description: "{{ $labels.app }} rapporterer ingen metrikker"
@@ -66,7 +66,7 @@ spec:
       action: "Kafkalytter stoppet på syfoaltinn. Sjekk logger, og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: spoknad-errorlogging
+    - alert: flex-errorlogging
       expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn"}[5m]))) > 10
       for: 3m
       description: "{{ $labels.log_app }} rapporterer error i loggene"

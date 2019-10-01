@@ -1,4 +1,4 @@
-name: Deploy spoknad-alert to NAIS
+name: Deploy flex-alert to NAIS
 on:
   push:
     branches:
@@ -16,8 +16,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           cluster: prod-fss
-          team: spoknad
-          rawresources: spoknad-alerts.yaml
+          team: flex
+          rawresources: flex-alerts.yaml
   deploy_prod_sbs:
     name: Deploy alert til prod-sbs
     runs-on: ubuntu-latest
@@ -30,5 +30,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           cluster: prod-sbs
-          team: spoknad
-          rawresources: spoknad-alerts-sbs.yaml
+          team: flex
+          rawresources: flex-alerts-sbs.yaml
