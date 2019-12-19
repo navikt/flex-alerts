@@ -4,7 +4,7 @@
 
 Lager alerts for team flex sine applikasjoner.
 
-For mer informasjon om hvordan alarmene fungerer se: https://github.com/nais/doc/tree/master/content/alerts
+For mer informasjon om hvordan alarmene fungerer se: https://doc.nais.io/observability/alerts
 
 ## Utvikling
 
