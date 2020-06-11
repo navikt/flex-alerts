@@ -2,6 +2,7 @@ apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
   name: flex-alerts
+  namespace: default
   labels:
     team: flex
 spec:
