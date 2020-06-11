@@ -18,7 +18,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-sbs-mangler-metrikker
-      expr: absent(up{app=~"syfoapi|sykepengesoknad|sykefravaer|modiasyfofront",job="kubernetes-pods"})
+      expr: absent(up{app=~"syfoapi|sykepengesoknad|sykefravaer",job="kubernetes-pods"})
       for: 5m
       description: "{{ $labels.app }} rapporterer ingen metrikker"
       action: "Sjekk om {{ $labels.app }} er oppe"
