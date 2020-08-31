@@ -19,26 +19,31 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-asynkron-app-nede
-      expr: up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfoaltinn",job="kubernetes-pods"} == 0
+      expr: up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfovarsel|syfoaltinn",job="kubernetes-pods"} == 0
       for: 10m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"syfosoknad|syfopdfgen|syfogsak|syfosoknadvarsel|syfoaltinn"}[30m])) by (container) > 2
+      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"syfosoknad|syfopdfgen|syfogsak|syfosoknadvarsel|syfovarsel|syfoaltinn"}[30m])) by (container) > 2
       for: 5m
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-mangler-metrikker
-      expr: absent(up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfosoknad|syfoaltinn|syfotekster",job="kubernetes-pods"})
+      expr: absent(up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfovarsel|syfosoknad|syfoaltinn|syfotekster",job="kubernetes-pods"})
       for: 5m
       description: "{{ $labels.app }} rapporterer ingen metrikker"
       action: "Sjekk om {{ $labels.app }} er oppe"
       sla: respond within 1h, during office hours
       severity: danger
+    - alert: syfovarsel-lytter-stoppet
+      expr: sum(increase(syfovarsel_kafkalytter_stoppet_total[30m])) > 10
+      for: 10m
+      description: "{{ $labels.app }} syn kafkalytter har stoppet"
+      action: "Kafkalytter stoppet på syfovarsel. Sjekk logger, og evt. `kubectl delete pod {{ $labels.kubernetes_pod_name }}` for å restarte"
     - alert: syfosoknadvarsel-lytter-stoppet
       expr: sum(increase(syfosoknadvarsel_kafkalytter_stoppet_total[30m])) > 10
       for: 10m
@@ -68,7 +73,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-errorlogging
-      expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfosoknad|syfoaltinn"}[5m]))) > 10
+      expr: (100 * sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfovarsel|syfosoknad|syfoaltinn",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_app=~"syfopdfgen|syfoarbeidsgivertilgang|syfogsak|syfonarmesteleder|syfoservicestrangler|syfosoknadvarsel|syfovarsel|syfosoknad|syfoaltinn"}[5m]))) > 10
       for: 3m
       description: "{{ $labels.log_app }} rapporterer error i loggene"
       action: "Sjekk loggene til {{ $labels.log_app }}, for å se hvorfor det er så mye feil (over 10 feil per 100 logger de siste 5 minuttene)"
