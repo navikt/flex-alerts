@@ -15,6 +15,7 @@ En kan bruke https://prometheus.nais.preprod.local/graph som hjelp til å teste 
 All kode som er i master går til prod.
 
 Det kan evt. gjøres manuelt med følgende kommandoer:
+* For gcp alerts: `kubectl apply --context prod-gcp --namespace default -f flex-alerts-gcp.yaml`
 * For fss alerts: `kubectl apply --context prod-fss --namespace default -f flex-alerts.yaml`
 * For sbs alerts: `kubectl apply --context prod-sbs --namespace default -f flex-alerts-sbs.yaml`
 
