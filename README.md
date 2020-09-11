@@ -9,6 +9,7 @@ For mer informasjon om hvordan alarmene fungerer se: https://doc.nais.io/observa
 ## Utvikling
 
 En kan bruke https://prometheus.nais.preprod.local/graph som hjelp til å teste queries.
+Eller for gcp : https://prometheus.prod-gcp.nais.io/graph
 
 ## Deploy prod
 
