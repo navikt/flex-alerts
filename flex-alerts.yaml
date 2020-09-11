@@ -12,14 +12,14 @@ spec:
       #prependText: '<!here> | '
   alerts:
     - alert: flex-app-nede
-      expr: up{app=~"syfosoknad|syfotekster",job="kubernetes-pods"} == 0
+      expr: up{team="flex"} == 0
       for: 2m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: flex-asynkron-app-nede
-      expr: up{app=~"syfopdfgen|syfogsak|syfosoknadvarsel|syfovarsel|syfoaltinn",job="kubernetes-pods"} == 0
+    - alert: teamsykefravr-app-nede
+      expr: up{app=~"syfopdfgen|syfovarsel",job="kubernetes-pods"} == 0
       for: 10m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
