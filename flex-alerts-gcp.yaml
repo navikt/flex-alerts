@@ -19,7 +19,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{container=~"spinnsyn-frontend|spinnsyn-backend"}[30m])) by (container) > 2
+      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex"}[30m])) by (container) > 2
       for: 5m
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
@@ -30,3 +30,10 @@ spec:
       for: 3m
       description: "{{ $labels.log_app }} rapporterer error i loggene"
       action: "Sjekk loggene til {{ $labels.log_app }}, for å se hvorfor det er så mye feil (over 10 feil per 100 logger de siste 5 minuttene)"
+    - alert: flex-mangler-metrikker
+      expr: count(up{team="flex"} offset 1h) by (app) unless count(up{team="flex"}) by (app)
+      for: 5m
+      description: "{{ $labels.app }} har sluttet å rapporterer metrikker"
+      action: "Sjekk om {{ $labels.app }} er oppe"
+      sla: respond within 1h, during office hours
+      severity: danger
