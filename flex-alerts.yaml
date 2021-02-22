@@ -12,8 +12,8 @@ spec:
       #prependText: '<!here> | '
   alerts:
     - alert: flex-app-nede
-      expr: up{team="flex"} == 0
-      for: 2m
+      expr: sum(up{team="flex"}) by (app) == 0
+      for: 4m
       description: "{{ $labels.app }} er nede"
       action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
       sla: respond within 1h, during office hours
