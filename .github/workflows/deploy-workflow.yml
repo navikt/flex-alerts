@@ -7,6 +7,7 @@ jobs:
   deploy_prod_gcp:
     name: Deploy alert to prod-gcp
     runs-on: ubuntu-latest
+    concurrency: deploy_prod_gcp
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
@@ -19,6 +20,7 @@ jobs:
   deploy_prod_fss:
     name: Deploy alert to prod-fss
     runs-on: ubuntu-latest
+    concurrency: deploy_prod_fss
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
