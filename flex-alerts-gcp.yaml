@@ -25,6 +25,13 @@ spec:
       action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
       sla: respond within 1h, during office hours
       severity: danger
+    - alert: flex-not-ready
+      expr: sum(kube_pod_container_status_ready{namespace="flex"} == 0) by (container) > 0
+      for: 10m
+      description: "{{ $labels.container }} svarer ikke ok på readiness de siste 10 minutter"
+      action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
+      sla: respond within 1h, during office hours
+      severity: danger
     - alert: flex-errorlogging
       expr: (100 * sum by (log_app) (rate(logd_messages_total{log_namespace="flex",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_namespace="flex"}[5m]))) > 10
       for: 3m
