@@ -19,7 +19,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container=~"spinnsyn-backend|spinnsyn-frontend|spinnsyn-backend-proxy"}[30m])) by (container) > 3
+      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector"}[30m])) by (container) > 3
       for: 1m
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
