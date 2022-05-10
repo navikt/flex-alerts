@@ -19,14 +19,14 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector"}[30m])) by (container) > 3
+      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container) > 3
       for: 1m
       description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
       action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-not-ready
-      expr: sum(kube_pod_container_status_ready{namespace="flex"} == 0) by (container) > 0
+      expr: sum(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container) > 0
       for: 10m
       description: "{{ $labels.container }} svarer ikke ok på readiness de siste 10 minutter"
       action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
