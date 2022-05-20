@@ -32,13 +32,6 @@ spec:
       action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: flex-mangler-metrikker
-      expr: absent(up{app=~"syfosoknad",job="kubernetes-pods"})
-      for: 5m
-      description: "{{ $labels.app }} rapporterer ingen metrikker"
-      action: "Sjekk om {{ $labels.app }} er oppe"
-      sla: respond within 1h, during office hours
-      severity: danger
     - alert: flex-errorlogging
       expr: (100 * sum by (log_app) (rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m]))) > 10
       for: 3m
