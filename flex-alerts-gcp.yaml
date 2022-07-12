@@ -44,7 +44,7 @@ spec:
       action: "Sjekk om {{ $labels.app }} er oppe"
       sla: respond within 1h, during office hours
       severity: danger
-    - alert: høyt antall HTTP server errors (5xx responses)
+    - alert: høyt antall HTTP server errors (500 responses)
       severity: danger
       expr: (100 * (sum by (app, namespace) (rate(response_total{namespace="flex",status_code="500",app!~"linkerd-proxy"}[3m]))/sum by (app, namespace) (rate(response_total{namespace="flex",app!~"linkerd-proxy"}[3m])))) > 1
       for: 3m
