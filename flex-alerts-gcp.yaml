@@ -46,6 +46,6 @@ spec:
       severity: danger
     - alert: høyt antall HTTP server errors (5xx responses)
       severity: danger
-      expr: (100 * (sum by (app, namespace) (rate(response_total{namespace="flex",status_code=~"^5\\d\\d",app!~"linkerd-proxy"}[3m]))/sum by (app, namespace) (rate(response_total{namespace="flex",app!~"linkerd-proxy"}[3m])))) > 1
+      expr: (100 * (sum by (app, namespace) (rate(response_total{namespace="flex",status_code="500",app!~"linkerd-proxy"}[3m]))/sum by (app, namespace) (rate(response_total{namespace="flex",app!~"linkerd-proxy"}[3m])))) > 1
       for: 3m
       action: "Sjekk loggene for å se grunnen til at {{ $labels.app }} returnerer feilmeldinger."
