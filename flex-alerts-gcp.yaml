@@ -49,3 +49,17 @@ spec:
       expr: (100 * (sum by (app, namespace) (rate(response_total{namespace="flex",status_code="500",app!~"linkerd-proxy"}[3m]))/sum by (app, namespace) (rate(response_total{namespace="flex",app!~"linkerd-proxy"}[3m])))) > 1
       for: 3m
       action: "Sjekk loggene for å se grunnen til at {{ $labels.app }} returnerer feilmeldinger."
+    - alert: flex-app-cpu
+      expr: (sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (container) - sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}[5m])) by (container)) < 0
+      for: 5m
+      description: "{{ $labels.container }} bruker mer CPU enn angitt"
+      action: "Sjekk CPU for {{ $labels.container }}, kanskje juster opp requested eller justere opp antall pods"
+      sla: respond within 1h, during office hours
+      severity: danger
+    - alert: flex-app-ram
+      expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (container) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (container) < 0
+      for: 5m
+      description: "{{ $labels.container }} bruker mer RAM enn angitt"
+      action: "Sjekk RAM for {{ $labels.container }}, kanskje juster opp requested eller justere opp antall pods"
+      sla: respond within 1h, during office hours
+      severity: danger
