@@ -57,7 +57,7 @@ spec:
       sla: respond within 1h, during office hours
       severity: danger
     - alert: flex-app-ram
-      expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (container) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (container) < 0
+      expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (pod) < 0
       for: 5m
       description: "{{ $labels.container }} bruker mer RAM enn angitt"
       action: "Sjekk RAM for {{ $labels.container }}, kanskje juster opp requested eller justere opp antall pods"
