@@ -50,9 +50,9 @@ spec:
       for: 3m
       action: "Sjekk loggene for å se grunnen til at {{ $labels.app }} returnerer feilmeldinger."
     - alert: flex-app-cpu
-      expr: (sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (container) - sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}[5m])) by (container)) < 0
+      expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_limits{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod)) > 0.90
       for: 5m
-      description: "{{ $labels.container }} bruker mer CPU enn angitt"
+      description: "{{ $labels.container }} bruker mer enn 90% CPU"
       action: "Sjekk CPU for {{ $labels.container }}, kanskje juster opp requested eller justere opp antall pods"
       sla: respond within 1h, during office hours
       severity: danger
