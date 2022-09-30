@@ -52,7 +52,7 @@ spec:
     - alert: flex-app-cpu
       expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_limits{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod)) > 0.90
       for: 5m
-      description: "{{ $labels.pod }} bruker mer enn {{ $labels.Value }}% CPU"
+      description: "{{ $labels.pod }} bruker {{ $value }} CPU"
       action: "Sjekk CPU for {{ $labels.pod }}, kanskje juster opp limits eller justere opp antall pods"
       sla: respond within 1h, during office hours
       severity: danger
