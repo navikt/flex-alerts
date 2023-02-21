@@ -10,7 +10,7 @@ spec:
     - name: flex-alerts
       rules:
       - alert: flex-app-nede
-        expr: sum(up{team="flex"}) by (app) == 0
+        expr: sum(up{team="flex", app!="flex-sykepengesoknad-pdfgen"}) by (app) == 0
         for: 1m
         annotations:
           consequence: Application is unavailable
