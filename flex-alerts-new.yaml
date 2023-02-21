@@ -29,3 +29,13 @@ spec:
         labels:
           namespace: flex
           severity: critical
+      - alert: flex-not-ready
+        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container) > 0
+        for: 1m
+        annotations:
+          consequence: Application is not ready
+          action: "`kubectl get pod"
+          summary: En av containerene i podden er ikke ready
+        labels:
+          namespace: flex
+          severity: critical
