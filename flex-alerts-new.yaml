@@ -19,3 +19,13 @@ spec:
         labels:
           namespace: flex
           severity: critical
+      - alert: flex-restart
+        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container) > 2
+        for: 1m
+        annotations:
+          consequence: Application is restarting
+          action: "`kubectl get pod"
+          summary: En av containerene i podden restarter
+        labels:
+          namespace: flex
+          severity: critical
