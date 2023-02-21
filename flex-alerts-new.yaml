@@ -69,3 +69,13 @@ spec:
         labels:
           namespace: flex
           severity: warning
+      - alert: flex-app-ram
+        expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (pod) < 0
+        for: 1m
+        annotations:
+          consequence: Application ram usage
+          action: "`kubectl get pod"
+          summary: Appen bruker mer ram enn den har requestet
+        labels:
+          namespace: flex
+          severity: warning
