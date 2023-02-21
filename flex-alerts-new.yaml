@@ -39,6 +39,16 @@ spec:
         labels:
           namespace: flex
           severity: critical
+      - alert: flex-mangler-metrikker
+        expr: count(up{team="flex"} offset 1h) by (app) unless count(up{team="flex"}) by (app)
+        for: 5m
+        annotations:
+          consequence: Application missing metrics
+          action: "`kubectl get pod | grep <app>`"
+          summary: Appen har sluttet å rapportere metrikker
+        labels:
+          namespace: flex
+          severity: critical
       - alert: flex-error-logging
         expr: ((sum(rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) by (log_app)) / (sum(rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m])) by (log_app))) > 0.1
         for: 1m
