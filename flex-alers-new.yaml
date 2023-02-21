@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: flex-alerts
+  namespace: flex
+spec:
+  groups:
+    - name: flex-alerts
+      rules:
+      - alert: flex-app-nede
+        expr: count(up) == 0
+        for: 1m
+        annotations:
+          consequence: Application is unavailable
+          action: "`kubectl describe pod <podname>` -> `kubectl logs <podname>`"
+          summary: |-
+            This is a multi-line summary with
+            linebreaks and everything. Here you can give a more detailed
+            summary of what this alert is about
+        labels:
+          namespace: flex
+          severity: critical

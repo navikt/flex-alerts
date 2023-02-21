@@ -30,4 +30,16 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: flex-alerts.yaml
-
+  deploy_prod_gcp_rule:
+    name: Apply alerts to prod-gcp
+    runs-on: ubuntu-latest
+    concurrency: deploy_prod_gcp_rule
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to prod-gcp
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: flex-alerts-new.yaml

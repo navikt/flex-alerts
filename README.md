@@ -6,13 +6,14 @@ Lager alerts for team flex sine applikasjoner.
 
 For mer informasjon om hvordan alarmene fungerer se: https://doc.nais.io/observability/alerts
 
-## Utvikling
+## Alertmanager
+Alerts status  https://alertmanager.prod-gcp.nav.cloud.nais.io/
+Dev-gcp: https://alertmanager.dev-gcp.nav.cloud.nais.io/
 
-En kan bruke https://prometheus.nais.adeo.no/graph som hjelp til å teste queries for fss.
-Eller for gcp : https://prometheus.prod-gcp.nais.io/graph
+## Metrics
+En kan bruke https://prometheus.prod-gcp.nais.io/graph som hjelp til å teste queries.
 
 ## Deploy prod
-
 All kode som er i master går til prod.
 
 Det kan evt. gjøres manuelt med følgende kommandoer:
@@ -24,5 +25,4 @@ Det kan evt. gjøres manuelt med følgende kommandoer:
 * For fss: `kubectl get alerts --context prod-fss`
 
 ## For NAV ansatte
-
 Vi er tilgjengelig på Slack: `#flex`
