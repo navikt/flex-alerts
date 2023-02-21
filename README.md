@@ -7,8 +7,12 @@ Lager alerts for team flex sine applikasjoner.
 For mer informasjon om hvordan alarmene fungerer se: https://doc.nais.io/observability/alerts
 
 ## Alertmanager
-Alerts status  https://alertmanager.prod-gcp.nav.cloud.nais.io/
-Dev-gcp: https://alertmanager.dev-gcp.nav.cloud.nais.io/
+Her finner man alle alerts og statusen dems nå: https://prometheus.prod-gcp.nav.cloud.nais.io/alerts?search=flex
+
+Alerts som har fyrt av og sendt notifikasjon på slack finner man her (tror jeg) https://alertmanager.prod-gcp.nav.cloud.nais.io/
+
+For å bestemme hvilke slack kanal alertene skal postes i så kan det endres her: https://console.nav.cloud.nais.io/teams/flex
+
 
 ## Metrics
 En kan bruke https://prometheus.prod-gcp.nais.io/graph som hjelp til å teste queries.
