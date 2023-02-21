@@ -3,6 +3,8 @@ kind: PrometheusRule
 metadata:
   name: flex-alerts
   namespace: flex
+  labels:
+    team: flex
 spec:
   groups:
     - name: flex-alerts
