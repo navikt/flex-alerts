@@ -10,15 +10,12 @@ spec:
     - name: flex-alerts
       rules:
       - alert: flex-app-nede
-        expr: count(up) == 0
+        expr: sum(up{team="flex"}) by (app) == 0
         for: 1m
         annotations:
           consequence: Application is unavailable
-          action: "`kubectl describe pod <podname>` -> `kubectl logs <podname>`"
-          summary: |-
-            This is a multi-line summary with
-            linebreaks and everything. Here you can give a more detailed
-            summary of what this alert is about
+          action: "`kubectl get pod | grep <app>`"
+          summary: Alle podder til appen er nede
         labels:
           namespace: flex
           severity: critical
