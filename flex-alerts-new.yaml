@@ -39,3 +39,13 @@ spec:
         labels:
           namespace: flex
           severity: critical
+      - alert: flex-error-logging
+        expr: ((sum(rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) by (log_app)) / (sum(rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m])) by (log_app))) > 0.1
+        for: 1m
+        annotations:
+          consequence: Application logging error
+          action: "`kubectl get pod"
+          summary: Appen logger i gjennomsnitt mer enn 1 av 10 error meldinger iløpet av de siste 5 minuttene
+        labels:
+          namespace: flex
+          severity: warning
