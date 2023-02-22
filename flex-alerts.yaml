@@ -1,39 +1,67 @@
-apiVersion: "nais.io/v1"
-kind: "Alert"
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
   name: flex-alerts
-  namespace: default
+  namespace: flex
   labels:
     team: flex
 spec:
-  receivers:
-    slack:
-      channel: '#spøkelser'
-      #prependText: '<!here> | '
-  alerts:
-    - alert: flex-app-nede
-      expr: sum(up{team="flex"}) by (app) == 0
-      for: 4m
-      description: "{{ $labels.app }} er nede"
-      action: "Se `kubectl describe pod {{ $labels.kubernetes_pod_name }}` for events, og `kubectl logs {{ $labels.kubernetes_pod_name }}` for logger"
-      sla: respond within 1h, during office hours
-      severity: danger
-    - alert: flex-kontinuerlig-restart
-      expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container) > 2
-      for: 1m
-      description: "{{ $labels.container }} har restartet flere ganger siste halvtimen!"
-      action: "Se `kubectl describe pod {{ $labels.container }}` for events, og `kubectl logs {{ $labels.container }}` for logger"
-      sla: respond within 1h, during office hours
-      severity: danger
-    - alert: flex-not-ready
-      expr: sum(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container) > 0
-      for: 10m
-      description: "{{ $labels.container }} svarer ikke ok på readiness de siste 10 minutter"
-      action: "Se `kubectl describe pod {{ $labels.pod_name }} -n flex` for events, og `kubectl logs {{ $labels.pod_name }} -c {{ $labels.app }} -n flex` for logger"
-      sla: respond within 1h, during office hours
-      severity: danger
-    - alert: flex-errorlogging
-      expr: (100 * sum by (log_app) (rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) / sum by (log_app) (rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m]))) > 10
-      for: 3m
-      description: "{{ $labels.log_app }} rapporterer error i loggene"
-      action: "Sjekk loggene til {{ $labels.log_app }}, for å se hvorfor det er så mye feil (over 10 feil per 100 logger de siste 5 minuttene)"
+  groups:
+    - name: flex-alerts
+      rules:
+      - alert: flex-app-nede
+        expr: sum(up{team="flex", app!="flex-sykepengesoknad-pdfgen"}) by (app) == 0
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.app }}` er nede"
+        labels:
+          namespace: flex
+          severity: critical
+      - alert: flex-restart
+        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container, pod) > 2
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.pod }}` sin container `{{ $labels.container }}` har restartet mye"
+        labels:
+          namespace: flex
+          severity: critical
+      - alert: flex-not-ready
+        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container, pod) > 0
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.pod }}` sin container `{{ $labels.container }}` er ikke ready"
+        labels:
+          namespace: flex
+          severity: critical
+      - alert: flex-mangler-metrikker
+        expr: count(up{team="flex"} offset 1h) by (app) unless count(up{team="flex"}) by (app)
+        for: 5m
+        annotations:
+          consequence: "`{{ $labels.app }}` har sluttet å rapportere metrikker"
+        labels:
+          namespace: flex
+          severity: critical
+      - alert: flex-error-logging
+        expr: ((sum(rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) by (log_app)) / (sum(rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m])) by (log_app))) > 0.1
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.log_app }}` 1 av 10 loggmeldinger er error"
+        labels:
+          namespace: flex
+          severity: warning
+      - alert: flex-app-cpu
+        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_limits{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod)) > 0.90
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.pod }}` bruker mer enn 90% cpu"
+        labels:
+          namespace: flex
+          severity: warning
+      - alert: flex-app-ram
+        expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (pod) < 0
+        for: 1m
+        annotations:
+          consequence: "`{{ $labels.pod }}` bruker mer ram enn den har requestet"
+        labels:
+          namespace: flex
+          severity: warning
