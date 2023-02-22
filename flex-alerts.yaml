@@ -66,7 +66,7 @@ spec:
           namespace: flex
           severity: warning
       - alert: flex-http-4xx
-        expr: (sum(rate(response_total{namespace="flex", app!="flex-sykepengesoknad-pdfgen", status_code=~"^4\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
+        expr: (sum(rate(response_total{namespace="flex", status_code=~"^4\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
         for: 1m
         annotations:
           consequence: "`{{ $labels.app }}` har mange HTTP 4xx-feilresponser"
