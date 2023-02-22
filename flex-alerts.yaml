@@ -10,15 +10,15 @@ spec:
     - name: flex-alerts
       rules:
       - alert: flex-app-nede
-        expr: sum(up{team="flex", app!="flex-sykepengesoknad-pdfgen"}) by (app) == 0
+        expr: kube_deployment_status_replicas_available{namespace="flex"} == 0
         for: 1m
         annotations:
-          consequence: "`{{ $labels.app }}` er nede"
+          consequence: "`{{ $labels.deployment }}` er nede"
         labels:
           namespace: flex
           severity: critical
       - alert: flex-restart
-        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container, pod) > 2
+        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[5m])) by (container, pod) > 2
         for: 1m
         annotations:
           consequence: "`{{ $labels.pod }}` sin container `{{ $labels.container }}` har restartet mye"
