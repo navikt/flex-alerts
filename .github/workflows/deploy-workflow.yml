@@ -4,42 +4,19 @@ on:
     branches:
       - master
 jobs:
-  deploy_prod_gcp:
-    name: Deploy alert to prod-gcp
+  deploy:
+    name: Apply alerts
     runs-on: ubuntu-latest
-    concurrency: deploy_prod_gcp
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Apply configuration file to prod-gcp
-        uses: nais/deploy/actions/deploy@master
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: flex-alerts-gcp.yaml
-  deploy_prod_fss:
-    name: Deploy alert to prod-fss
-    runs-on: ubuntu-latest
-    concurrency: deploy_prod_fss
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v1
-      - name: Apply configuration file to prod-fss
-        uses: nais/deploy/actions/deploy@master
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
-          RESOURCE: flex-alerts.yaml
-  deploy_prod_gcp_rule:
-    name: Apply alerts to prod-gcp
-    runs-on: ubuntu-latest
-    concurrency: deploy_prod_gcp_rule
+    concurrency: apply_alerts
+    strategy:
+      matrix:
+        containers: [ prod-gcp, prod-fss, dev-gcp, dev-fss ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Deploy to prod-gcp
+      - name: Deploy to cluster
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
+          CLUSTER: ${{ matrix.containers }}
           RESOURCE: flex-alerts-new.yaml
