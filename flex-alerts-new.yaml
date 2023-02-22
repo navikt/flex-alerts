@@ -13,29 +13,23 @@ spec:
         expr: sum(up{team="flex", app!="flex-sykepengesoknad-pdfgen"}) by (app) == 0
         for: 1m
         annotations:
-          consequence: Application is unavailable
-          action: "`kubectl get pod | grep <app>`"
-          summary: Alle podder til appen er nede
+          consequence: "`\{{ $labels.app }}` er nede"
         labels:
           namespace: flex
           severity: critical
       - alert: flex-restart
-        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container) > 2
+        expr: sum(increase(kube_pod_container_status_restarts_total{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"}[30m])) by (container, pod) > 2
         for: 1m
         annotations:
-          consequence: Application is restarting
-          action: "`kubectl get pod"
-          summary: En av containerene i podden restarter
+          consequence: "`\{{ $labels.pod }}` sin container `\{{ $labels.container }}` har restartet mye"
         labels:
           namespace: flex
           severity: critical
       - alert: flex-not-ready
-        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container) > 0
+        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container, pod) > 0
         for: 1m
         annotations:
-          consequence: Application is not ready
-          action: "`kubectl get pod"
-          summary: En av containerene i podden er ikke ready
+          consequence: "`\{{ $labels.pod }}` sin container `\{{ $labels.container }}` er ikke ready"
         labels:
           namespace: flex
           severity: critical
@@ -43,9 +37,7 @@ spec:
         expr: count(up{team="flex"} offset 1h) by (app) unless count(up{team="flex"}) by (app)
         for: 5m
         annotations:
-          consequence: Application missing metrics
-          action: "`kubectl get pod | grep <app>`"
-          summary: Appen har sluttet å rapportere metrikker
+          consequence: "`\{{ $labels.app }}` har sluttet å rapportere metrikker"
         labels:
           namespace: flex
           severity: critical
@@ -53,9 +45,7 @@ spec:
         expr: ((sum(rate(logd_messages_total{log_team="flex",log_app!="elector",log_level="Error"}[5m])) by (log_app)) / (sum(rate(logd_messages_total{log_team="flex",log_app!="elector"}[5m])) by (log_app))) > 0.1
         for: 1m
         annotations:
-          consequence: Application logging error
-          action: "`kubectl get pod"
-          summary: Appen logger i gjennomsnitt mer enn 1 av 10 error meldinger iløpet av de siste 5 minuttene
+          consequence: "`\{{ $labels.log_app }}` 1 av 10 loggmeldinger er error"
         labels:
           namespace: flex
           severity: warning
@@ -63,9 +53,7 @@ spec:
         expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_limits{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod)) > 0.90
         for: 1m
         annotations:
-          consequence: Application cpu usage
-          action: "`kubectl get pod"
-          summary: Appen bruker mer enn 90% cpu
+          consequence: "`\{{ $labels.pod }}` bruker mer enn 90% cpu"
         labels:
           namespace: flex
           severity: warning
@@ -73,9 +61,7 @@ spec:
         expr: sum(kube_pod_container_resource_requests{namespace="flex", resource="memory", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD", container!=""}) by (pod) < 0
         for: 1m
         annotations:
-          consequence: Application ram usage
-          action: "`kubectl get pod"
-          summary: Appen bruker mer ram enn den har requestet
+          consequence: "`\{{ $labels.pod }}` bruker mer ram enn den har requestet"
         labels:
           namespace: flex
           severity: warning
