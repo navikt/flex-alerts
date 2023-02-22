@@ -12,7 +12,7 @@ jobs:
         containers: [ prod-gcp, prod-fss, dev-gcp, dev-fss ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Deploy to cluster
         uses: nais/deploy/actions/deploy@v1
         env:
