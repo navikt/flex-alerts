@@ -7,7 +7,6 @@ jobs:
   deploy:
     name: Apply alerts
     runs-on: ubuntu-latest
-    concurrency: apply_alerts
     strategy:
       matrix:
         containers: [ prod-gcp, prod-fss, dev-gcp, dev-fss ]
