@@ -50,7 +50,7 @@ spec:
           namespace: flex
           severity: warning
       - alert: flex-app-cpu
-        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-proxy",container!="cloudsql-proxy",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu", container!="linkerd-proxy",container!="cloudsql-proxy"}) by (pod)) > 1
+        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD",container!=""}[5m])) by (pod) / sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD",container!=""}) by (pod)) > 1
         for: 3m
         annotations:
           consequence: "`{{ $labels.pod }}` bruker mer cpu enn den har requestet"
