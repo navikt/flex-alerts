@@ -42,7 +42,7 @@ spec:
           namespace: flex
           severity: critical
       - alert: flex-error-logging
-        expr: (sum(rate(log_messages_errors{namespace="flex", app!="cloudsql-proxy", app!="elector", app!="linkerd-proxy", app!="wonderwall", app!="linkerd-init"}[1m])) by (app) / sum(rate(log_messages_total{namespace="flex", app!="cloudsql-proxy", app!="elector", app!="linkerd-proxy", app!="wonderwall", app!="linkerd-init"}[1m])) by (app)) > 0.1
+        expr: (sum(rate(log_messages_errors{namespace="flex", app!="cloudsql-proxy", app!="elector", app!="linkerd-proxy", app!="wonderwall", app!="linkerd-init", level="Error"}[1m])) by (app) / sum(rate(log_messages_total{namespace="flex", app!="cloudsql-proxy", app!="elector", app!="linkerd-proxy", app!="wonderwall", app!="linkerd-init"}[1m])) by (app)) > 0.1
         for: 3m
         annotations:
           consequence: "`{{ $labels.app }}` 1 av 10 loggmeldinger er error"
