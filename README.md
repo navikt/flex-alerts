@@ -16,7 +16,7 @@ For å bestemme hvilke slack kanal alertene skal postes i så kan det endres her
 
 
 ## Metrics
-En kan bruke https://prometheus.prod-gcp.nais.io/graph som hjelp til å teste queries.
+En kan bruke https://grafana.nais.io/explore som hjelp til å teste queries.
 
 ## Deploy prod
 All kode som er i master går til prod og dev.
