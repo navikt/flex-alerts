@@ -57,11 +57,19 @@ spec:
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-app-ram
+      - alert: flex-app-ram-request
         expr: (sum(kube_pod_container_resource_requests{namespace="flex", resource="memory",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD", container!=""}) by (pod)) < 0
         for: 3m
         annotations:
-          consequence: "`{{ $labels.pod }}` bruker mer ram enn den har requestet"
+          consequence: "`{{ $labels.pod }}` bruker mer minne enn den har requestet"
+        labels:
+          namespace: flex
+          severity: warning
+      - alert: flex-app-ram-limit
+        expr: (sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD", container!=""}) by (pod) / sum(kube_pod_container_resource_limits{namespace="flex", resource="memory",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}) by (pod)) > 0.9
+        for: 3m
+        annotations:
+          consequence: "`{{ $labels.pod }}` bruker mer enn 90% av minne limit"
         labels:
           namespace: flex
           severity: warning
