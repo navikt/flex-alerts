@@ -65,19 +65,19 @@ spec:
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-http-4xx
-        expr: (sum(rate(response_total{namespace="flex", status_code=~"^4\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
+      - alert: flex-spring-http-4xx
+        expr: (sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^4\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri) / sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^2\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri)) > 0.1
         for: 3m
         annotations:
-          consequence: "`{{ $labels.app }}` har mange HTTP 4xx-feilresponser"
+          consequence: "`{{ $labels.app }}` har mer enn 10% HTTP 4xx-feilresponser for uri {{ $labels.uri }}"
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-http-5xx
-        expr: (sum(rate(response_total{namespace="flex", status_code=~"^5\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
+      - alert: flex-spring-http-5xx
+        expr: (sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^5\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri) / sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^2\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri)) > 0.1
         for: 3m
         annotations:
-          consequence: "`{{ $labels.app }}` har mange HTTP 5xx-feilresponser"
+          consequence: "`{{ $labels.app }}` har mer enn 10% HTTP 5xx-feilresponser for uri {{ $labels.uri }}"
         labels:
           namespace: flex
           severity: critical
