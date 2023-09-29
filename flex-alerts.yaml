@@ -50,7 +50,7 @@ spec:
           namespace: flex
           severity: warning
       - alert: flex-app-cpu
-        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD",container!="",container!="sykepengesoknad-sak-status-metrikk"}[2m])) by (pod) / sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD",container!="",container!="sykepengesoknad-sak-status-metrikk"}) by (pod)) > 1
+        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!="",container!="sykepengesoknad-sak-status-metrikk"}[2m])) by (pod) / sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!="",container!="sykepengesoknad-sak-status-metrikk"}) by (pod)) > 1
         for: 5m
         annotations:
           consequence: "`{{ $labels.pod }}` bruker mer cpu enn den har requestet"
@@ -58,26 +58,26 @@ spec:
           namespace: flex
           severity: warning
       - alert: flex-app-ram
-        expr: (sum(kube_pod_container_resource_requests{namespace="flex", resource="memory",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD",container!=""}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="POD", container!=""}) by (pod)) < 0
+        expr: (sum(kube_pod_container_resource_requests{namespace="flex", resource="memory",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD", container!=""}) by (pod)) < 0
         for: 3m
         annotations:
           consequence: "`{{ $labels.pod }}` bruker mer ram enn den har requestet"
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-http-4xx
-        expr: (sum(rate(response_total{namespace="flex", status_code=~"^4\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
+      - alert: flex-spring-http-4xx
+        expr: (sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^4\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri) / sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^2\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri)) > 0.1
         for: 3m
         annotations:
-          consequence: "`{{ $labels.app }}` har mange HTTP 4xx-feilresponser"
+          consequence: "`{{ $labels.app }}` har mer enn 10% HTTP 4xx-feilresponser for uri {{ $labels.uri }}"
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-http-5xx
-        expr: (sum(rate(response_total{namespace="flex", status_code=~"^5\\d\\d"}[3m])) by (app) / sum(rate(response_total{namespace="flex", status_code=~"^2\\d\\d"}[3m])) by (app)) > 0.01
+      - alert: flex-spring-http-5xx
+        expr: (sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^5\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri) / sum(rate(http_server_requests_seconds_count{namespace="flex", status=~"^2\\d\\d", uri!="/internal/health/**", uri!="/internal/health", uri!="/internal/prometheus"}[10m])) by (app,uri)) > 0.1
         for: 3m
         annotations:
-          consequence: "`{{ $labels.app }}` har mange HTTP 5xx-feilresponser"
+          consequence: "`{{ $labels.app }}` har mer enn 10% HTTP 5xx-feilresponser for uri {{ $labels.uri }}"
         labels:
           namespace: flex
           severity: critical
