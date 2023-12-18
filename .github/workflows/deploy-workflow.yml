@@ -7,6 +7,8 @@ jobs:
   deploy:
     name: Apply alerts
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     strategy:
       matrix:
         containers: [ prod-gcp, prod-fss, dev-gcp, dev-fss ]
@@ -14,8 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Deploy to cluster
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: ${{ matrix.containers }}
           RESOURCE: flex-alerts.yaml
