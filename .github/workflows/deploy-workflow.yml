@@ -11,7 +11,7 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        containers: [ prod-gcp, prod-fss, dev-gcp, dev-fss ]
+        containers: [ prod-gcp, dev-gcp ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
