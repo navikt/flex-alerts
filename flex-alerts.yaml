@@ -26,7 +26,7 @@ spec:
           namespace: flex
           severity: critical
       - alert: flex-not-ready
-        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container, pod) > 0
+        expr: count(kube_pod_container_status_ready{namespace="flex", container!="elector", container!="flex-bigquery-soda-run-on-deploy", container!="cloudsql-proxy", container!="linkerd-proxy"} == 0) by (container, pod) > 0
         for: 3m
         annotations:
           consequence: "`{{ $labels.pod }}` sin container `{{ $labels.container }}` er ikke ready"
