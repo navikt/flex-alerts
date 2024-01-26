@@ -2,7 +2,7 @@ name: Deploy flex-alert to NAIS
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   deploy:
     name: Apply alerts
