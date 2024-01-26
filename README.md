@@ -12,22 +12,20 @@ Her finner man alle alerts og statusen dems nå: https://prometheus.prod-gcp.nav
 Alerts som har fyrt av og sendt notifikasjon på slack finner man her https://alertmanager.prod-gcp.nav.cloud.nais.io/
 her kan man også silence alerts
 
-For å bestemme hvilke slack kanal alertene skal postes i så kan det endres her: https://console.nav.cloud.nais.io/teams/flex
+For å bestemme hvilke slack kanal alertene skal postes i så kan det endres her: https://console.nav.cloud.nais.io/team/flex/settings
 
 
 ## Metrics
-En kan bruke https://grafana.nais.io/explore som hjelp til å teste queries.
+En kan bruke https://grafana.nav.cloud.nais.io/explore som hjelp til å teste queries.
 
 ## Deploy prod
-All kode som er i master går til prod og dev.
+All kode som er i main går til prod og dev.
 
 Det kan evt. gjøres manuelt med følgende kommandoer:
 * For gcp alerts: `kubectl apply -f --context prod-gcp --namespace flex flex-alerts.yaml`
-* For fss alerts: `kubectl apply -f --context prod-fss --namespace flex flex-alerts.yaml`
 
 ## Sjekk at alerts kjører
 * For gcp: `kubectl get prometheusRule --context prod-gcp --namespace flex`
-* For fss: `kubectl get prometheusRule --context prod-fss --namespace flex`
 
 ## For NAV ansatte
 Vi er tilgjengelig på Slack: `#flex`
