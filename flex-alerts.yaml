@@ -49,14 +49,6 @@ spec:
         labels:
           namespace: flex
           severity: warning
-      - alert: flex-app-cpu
-        expr: (sum(rate(container_cpu_usage_seconds_total{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}[2m])) by (pod) / sum(kube_pod_container_resource_requests{namespace="flex",resource="cpu",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}) by (pod)) > 1
-        for: 5m
-        annotations:
-          consequence: "`{{ $labels.pod }}` bruker mer cpu enn den har requestet"
-        labels:
-          namespace: flex
-          severity: warning
       - alert: flex-app-ram-request
         expr: (sum(kube_pod_container_resource_requests{namespace="flex", resource="memory",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD",container!=""}) by (pod) - sum(container_memory_working_set_bytes{namespace="flex",container!="linkerd-init",container!="linkerd-proxy",container!="cloudsql-proxy",container!="elector",container!="wonderwall",container!="POD", container!=""}) by (pod)) < 0
         for: 3m
