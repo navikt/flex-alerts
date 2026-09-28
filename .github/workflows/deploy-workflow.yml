@@ -14,9 +14,9 @@ jobs:
         containers: [ prod-gcp, dev-gcp ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Deploy to cluster
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: ${{ matrix.containers }}
           RESOURCE: flex-alerts.yaml
